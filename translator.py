@@ -158,7 +158,7 @@ def main(directory):
         key = cv2.waitKey(0) & 0xFF
         char_key = chr(key).lower()  # Convert key press to lowercase as having capslock on prevents key binds from working
 
-        # Left arrow or 'a'
+        # Left arrow or 'a' | Depending on the keyboard and OS using the left and right arrows may not work
         if char_key == 'a' or key == 81:
             if current_img_index > 0:
                 current_img_index -= 1

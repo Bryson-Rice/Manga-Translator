@@ -1,0 +1,5 @@
+opencv-python-headless
+pillow
+deep-translator
+manga-ocr
+numpy

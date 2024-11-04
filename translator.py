@@ -7,7 +7,7 @@ from deep_translator import GoogleTranslator
 import numpy as np
 import argparse
 
-# TODO: When running with -h script will load ocr model instead of showing help menu immediately
+# TODO: When running with -h script will load ocr model
 # Initialize the manga-ocr model and translator
 ocr = MangaOcr()
 translator = GoogleTranslator(source="ja", target="en")
@@ -119,6 +119,9 @@ def draw_rectangle(event, x, y, flags, param):
 
 
 def load_images_from_directory(directory):
+    # Convert relative path to absolute path | weird errors if trying to use relative
+    directory = os.path.abspath(directory)
+    
     valid_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".tiff"]
     image_files = [
         os.path.join(directory, f)
@@ -127,6 +130,7 @@ def load_images_from_directory(directory):
     ]
     image_files.sort(key=natural_sort_key)
     return image_files
+
 
 
 def display_image(index, image_files):
@@ -141,6 +145,10 @@ def display_image(index, image_files):
 
 def main(directory):
     global current_img_index, fullscreen, window_position, window_size
+    
+    # Normalize the directory path to avoid trailing backslashes causing issues
+    directory = os.path.normpath(directory.strip('"'))
+    
     image_files = load_images_from_directory(directory)
     total_images = len(image_files)
 
@@ -163,13 +171,11 @@ def main(directory):
             if current_img_index > 0:
                 current_img_index -= 1
                 display_image(current_img_index, image_files)
-
         # Right arrow or 'd'
         elif char_key == 'd' or key == 83:
             if current_img_index < total_images - 1:
                 current_img_index += 1
                 display_image(current_img_index, image_files)
-
         # Toggle fullscreen with 'f'
         elif char_key == 'f':
             fullscreen = not fullscreen
@@ -181,12 +187,12 @@ def main(directory):
                 cv2.setWindowProperty("Image", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_NORMAL)
                 cv2.resizeWindow("Image", *window_size)
                 cv2.moveWindow("Image", *window_position)
-
         # Esc key to exit
         elif key == 27:
             break
 
     cv2.destroyAllWindows()
+
 
 
 
